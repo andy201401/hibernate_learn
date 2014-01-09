@@ -34,7 +34,7 @@
 	<property name="format_sql">true</property>
 
         <mapping resource="com/hibernate/model/Student.hbm.xml"/>
-		<mapping class="com.hibernate.model.Teacher"/>
+	<mapping class="com.hibernate.model.Teacher"/>
     </session-factory>
 
 </hibernate-configuration>
