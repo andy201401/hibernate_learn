@@ -1,0 +1,99 @@
+Use automate id by hibernate:
+If you want the tables' id be created automation. How to do it?
+When use XML file, Just use the generator:
+		<id name="id">
+			<generator class="native"></generator>
+		</id>
+now id witch is named id will be created automation. 
+The class native can automatically identify Database you use.
+You can also use uuid or hilo to get a single number.
+uuid can generate a number unique all the universe.
+
+When use annotation, Just use the @GeneratedValue under @Id
+if you want to automate id. Just use @GeneratedValue
+by default all database can automate id
+When use Database which suport identity. just use @GeneratedValue(strategy = GenerationType.IDENTITY)
+When use @GeneratedValue(strategy=GenerationType.TABLE, generator="DOCTOR_GEN")database which suport sequence. just use @GeneratedValue(strategy = GenerationType.SEQUENCE)
+
+The best way to let your data and program can be used anywhere is use @TableGenerator
+@TableGenerator(
+		name="DOCTOR_GEN",
+	    table="GENERATOR_TABLE",
+	    pkColumnName = "pk_key",
+	    valueColumnName = "hi",
+	    pkColumnValue="doctor",
+	    allocationSize=1
+)
+/*Use TableGenerator
+ * Create a table which is named GENERATOR_TABLE and includes two column
+ * Column "Key" and column "hi"
+ * set a value in column Key which is named teacher
+ * then the table which is named teacher create id will get it form GENERATOR_TABLE
+ * at the last the value of column hi do add by allocationSize
+ * */
+ TableGennerator create a table to save number for other tables;
+ Use @GeneratedValue(strategy=GenerationType.TABLE, generator="DOCTOR_GEN") to use Generator table.
+ 
+ 
+ sometimes we need more than one column to be primary key.
+ So we Create a class to provide object which object package primary key.
+public class ProgramerPK implements Serializable{
+	private int id;
+	private String sid;
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getSid() {
+		return sid;
+	}
+	public void setSid(String sid) {
+		this.sid = sid;
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(o instanceof ProgramerPK){
+			ProgramerPK sp = (ProgramerPK)o;
+			if(this.id == sp.getId() && this.sid == sp.getSid()){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode(){
+		return this.sid.hashCode();
+	}
+}
+
+This class has two element named id and sid.
+But we must implement the Serializable interface.
+The Serializable interface can make this class be serialized.
+Then we must also to override the equals method and hashCode method.
+The equals which is overrode can assert objects real equal or not.
+The hashCode which is overrode can get real hashCode for object. 
+And the hashCode will be used for serializeble.
+
+If use XML file to configure hibernate do like this:
+<composite-id class="ProgramerPK" name="stp">
+			<key-property name="id"></key-property>
+			<key-property name="sid"></key-property>
+</composite-id> 
+repleace <id></id>
+
+
+If use annotation just write like this:
+	@EmbeddedId
+	//use many of columns be ID
+	public ProgramerPK getPp() {
+		return pp;
+	}
+	public void setPp(ProgramerPK pp) {
+		this.pp = pp;
+	}
+   
+ 
